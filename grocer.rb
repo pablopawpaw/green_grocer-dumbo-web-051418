@@ -46,6 +46,78 @@ def apply_coupons(cart, coupons)
   #reflect count on item 
   #add discounted item to cart 
   
+  #IF 
+  def find_coupon_items(cart, coupons)
+    check_array = 0 
+    cart.each do |cart_element|
+      cart_element.each do |cart_key, cart_details|
+        coupons.each do |coupon_key, coupon_value|
+          if cart_key == coupon_key[:item]
+            true 
+            check_array += 1
+          end 
+        end 
+      end 
+    end 
+    if check_array >= 1
+      true
+    else 
+      puts "#{coupons[i][:item]} isn't in your shopping cart." 
+    end 
+  end 
+
+  def check_number_of_items(cart,coupons)
+    cart.map do |cart_element|
+      cart_element.map do |item, details|
+        coupons.map do |coupon_key, coupon_value|
+          if item.include?(coupon_key[:item])
+            details[:count] >= coupon_key[:num]
+          end 
+        end 
+      end 
+    end.compact.flatten[0]
+  end 
+
+
+  def reflect_coupon_changes(cart, coupons)
+    discounted_items = []
+    if check_number_of_items(cart, coupons) == true 
+      cart.each do |cart_element|
+        cart_element.each do |cart_key, cart_details|
+          coupons.each do |coupon_key, coupon_value|
+            if cart_key == coupon_key[:item]
+              if cart_element[coupon_key[:item]][:count] == coupon_key[:num]
+                  discounted_items << cart_key
+                  discounted_items << cart_details
+                  cart_element.delete cart_key
+              else 
+                cart_element[cart_key][:count] -= coupon_key[:num]
+                coupons.delete coupon_key
+              end
+            end 
+          end 
+        end 
+      end 
+    end 
+    discounted_items 
+
+    if coupons.length >= 1 
+      if coupons.length == 1 
+        cart[cart.length-1] = {} 
+        cart[cart.length-1]["#{coupons[0][:item]} W/COUPON"] = {} 
+        if coupons[0][:item] == discounted_items[0]
+          discounted_items.delete discounted_items[0]
+          cart[cart.length-1]["#{coupons[0][:item]} W/COUPON"] = discounted_items[0]
+          cart[cart.length-1]["#{coupons[0][:item]} W/COUPON"][:price] = coupons[0][:cost]
+        end 
+      end 
+    end 
+  end 
+  find_coupon_items(cart,coupons)
+  check_number_of_items(cart,coupons)
+  reflect_coupon_changes(cart, coupons)
+  cart
+  
 =begin #if dataset was an array of hashes 
   def find_coupon_items(cart, coupons)
     i = 0 
