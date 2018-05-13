@@ -46,7 +46,7 @@ def apply_coupons(cart, coupons)
   #reflect count on item 
   #add discounted item to cart 
   
-  #IF 
+  #IF DATASET IS A HASH OF HASHES 
   def find_coupon_items(cart, coupons)
     check_array = 0 
     cart.each do |cart_element|
